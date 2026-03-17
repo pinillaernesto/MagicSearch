@@ -1,4 +1,3 @@
-
 import os
 import requests
 from flask import Flask, render_template, request
@@ -12,7 +11,7 @@ def index():
     if request.method == 'POST':
         query = request.form.get('query')
         if query:
-            # The search logic remains the same as Scryfall handles 'function:'
+            # Conexión directa con la API de Scryfall
             response = requests.get(f"https://api.scryfall.com/cards/search?q={query}")
             if response.status_code == 200:
                 cards = response.json().get('data', [])
