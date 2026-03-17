@@ -7,59 +7,44 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #0a0a0c; color: #d1d1d6; margin: 0; padding: 10px; }
         .container { max-width: 1100px; margin: auto; text-align: center; }
-        h1 { color: #ff3b30; text-shadow: 0 0 10px rgba(255, 59, 48, 0.4); font-size: 1.8em; margin-bottom: 10px; }
+        h1 { color: #ff3b30; text-shadow: 0 0 10px rgba(255, 59, 48, 0.4); font-size: 1.8em; }
         
-        /* Guide - Always visible on mobile */
-        .guide-box { 
-            background: #1c1c1e; 
-            border: 1px solid #3a3a3c; 
-            border-radius: 12px; 
-            padding: 12px; 
-            margin-bottom: 20px; 
-            font-size: 0.85em;
-            text-align: left;
-        }
-        .guide-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
-            gap: 10px; 
-        }
-        code { background: #000; color: #ff9f0a; padding: 2px 4px; border-radius: 4px; font-family: monospace; }
-
-        /* Controls & Slicers */
         .controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; align-items: center; }
         .group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
         
-        .btn-slicer, select, .mv-input { 
+        /* Buttons and Dropdowns */
+        .btn-slicer, select, .mv-input, .text-input { 
             background: #1c1c1e; color: #fff; border: 1px solid #3a3a3c; 
             padding: 8px 12px; border-radius: 15px; cursor: pointer; font-size: 0.85em; 
         }
-        .mv-input { width: 50px; text-align: center; border-radius: 8px; }
-
-        /* Search Form */
-        form { display: flex; flex-direction: column; gap: 10px; align-items: center; margin-bottom: 30px; width: 100%; }
-        #searchBar { 
-            width: 90%; max-width: 600px; padding: 14px; 
-            border-radius: 25px; border: 1px solid #3a3a3c; 
-            background: #1c1c1e; color: #fff; font-size: 1em;
-        }
-        .btn-optimize { 
-            width: 90%; max-width: 200px; padding: 12px; 
-            border-radius: 25px; border: none; background: #ff3b30; 
-            color: #fff; font-weight: bold; cursor: pointer; 
-        }
-
-        /* Results Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .card-box { background: #1c1c1e; padding: 5px; border-radius: 10px; border: 1px solid #2c2c2e; }
-        .card-box img { width: 100%; border-radius: 5px; display: block; }
         
-        /* Desktop Adjustments */
+        /* Fix for Dropdown visibility */
+        select option { background: #fff; color: #000; }
+
+        .mv-input, .text-input { background: #1c1c1e; color: #fff; }
+        .mv-input { width: 45px; text-align: center; }
+        .text-input { width: 140px; border-radius: 10px; }
+
+        /* Mana Colors */
+        .btn-w { border-color: #fdf5cd; color: #fdf5cd; }
+        .btn-u { border-color: #0e68ab; color: #0e68ab; }
+        .btn-b { border-color: #a1a1a6; color: #a1a1a6; }
+        .btn-r { border-color: #d32f2f; color: #d32f2f; }
+        .btn-g { border-color: #00733e; color: #00733e; }
+
+        /* Main Search Form */
+        form { display: flex; flex-direction: column; gap: 10px; align-items: center; margin-bottom: 30px; width: 100%; }
+        #searchBar { width: 95%; max-width: 700px; padding: 14px; border-radius: 25px; border: 2px solid #3a3a3c; background: #1c1c1e; color: #fff; font-size: 1em; }
+        .btn-optimize { width: 200px; padding: 12px; border-radius: 25px; border: none; background: #ff3b30; color: #fff; font-weight: bold; cursor: pointer; }
+
+        /* Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .card-box { background: #1c1c1e; padding: 5px; border-radius: 10px; border: 1px solid #2c2c2e; }
+        .card-box img { width: 100%; border-radius: 5px; }
+
         @media (min-width: 600px) {
             h1 { font-size: 2.5em; }
             .grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-            form { flex-direction: row; justify-content: center; }
-            .guide-box { padding: 15px; }
         }
     </style>
 </head>
@@ -67,32 +52,34 @@
     <div class="container">
         <h1>MagicSearch: Nexus Edition</h1>
 
-        <div class="guide-box">
-            <div class="guide-grid">
-                <div>Identity: <code>commander:WBR</code></div>
-                <div>Mana Value: <code>mv<=3</code></div>
-                <div>Logic: <code>function:draw</code></div>
-                <div>Oracle: <code>o:attacks</code></div>
-            </div>
-        </div>
-
         <div class="controls">
             <div class="group">
-                <button class="btn-slicer" onclick="addText('function:draw')">💧 Draw</button>
-                <button class="btn-slicer" onclick="addText('function:ramp')">🌱 Ramp</button>
-                <button class="btn-slicer" onclick="addText('function:removal')">💀 Removal</button>
+                <button class="btn-slicer" onclick="addText('function:draw')">Draw</button>
+                <button class="btn-slicer" onclick="addText('function:ramp')">Ramp</button>
+                <button class="btn-slicer" onclick="addText('function:removal')">Removal</button>
+                <button class="btn-slicer" onclick="addText('function:wrath')">Boardwipe</button>
+                <button class="btn-slicer" onclick="addText('function:treasure')">Treasure</button>
+                <button class="btn-slicer" onclick="addText('function:landfall')">Landfall</button>
                 <select class="btn-slicer" onchange="addText(this.value); this.selectedIndex=0;">
-                    <option value="">More Functions...</option>
-                    <option value="function:tutor">🔍 Tutor</option>
-                    <option value="function:wrath">💥 Board Wipe</option>
-                    <option value="function:reanimate">⚰️ Reanimate</option>
-                    <option value="function:counterspell">🚫 Counter</option>
+                    <option value="">Others...</option>
+                    <option value="function:tutor">Tutor</option>
+                    <option value="function:reanimate">Reanimate</option>
+                    <option value="function:counterspell">Counterspell</option>
+                    <option value="function:stax">Stax</option>
+                    <option value="function:protection">Protection</option>
                 </select>
             </div>
 
-            <div class="group" style="background: #1c1c1e; padding: 8px 15px; border-radius: 20px; border: 1px solid #3a3a3c;">
-                <span style="font-size: 0.8em; align-self: center; margin-right: 5px;">MV:</span>
-                <select id="mvOp" class="btn-slicer" style="border: none; background: transparent;">
+            <div class="group">
+                <input type="text" id="nameInp" class="text-input" placeholder="Card Name...">
+                <button class="btn-slicer" onclick="addRaw('nameInp', '')">Add Name</button>
+                <input type="text" id="oraInp" class="text-input" placeholder="Oracle text...">
+                <button class="btn-slicer" onclick="addRaw('oraInp', 'o:')">Add Oracle</button>
+            </div>
+
+            <div class="group" style="background: #1c1c1e; padding: 5px 15px; border-radius: 20px; border: 1px solid #3a3a3c;">
+                <span style="font-size: 0.8em; margin-right: 5px;">MV:</span>
+                <select id="mvOp" class="btn-slicer" style="border:none;">
                     <option value="=">=</option>
                     <option value="<">&lt;</option>
                     <option value="<=">&le;</option>
@@ -100,21 +87,21 @@
                     <option value=">=">&ge;</option>
                 </select>
                 <input type="number" id="mvNum" class="mv-input" placeholder="0">
-                <button class="btn-slicer" onclick="addMV()" style="margin-left: 5px; background: #3a3a3c;">Add</button>
+                <button class="btn-slicer" onclick="addMV()" style="background: #3a3a3c; border:none;">Add MV</button>
             </div>
 
             <div class="group">
-                <button class="btn-slicer" onclick="addText('c:w')">W</button>
-                <button class="btn-slicer" onclick="addText('c:u')">U</button>
-                <button class="btn-slicer" onclick="addText('c:b')">B</button>
-                <button class="btn-slicer" onclick="addText('c:r')">R</button>
-                <button class="btn-slicer" onclick="addText('c:g')">G</button>
-                <button class="btn-slicer" style="background: #444;" onclick="clearAll()">🗑️ Clear</button>
+                <button class="btn-slicer btn-w" onclick="addText('c:w')">W</button>
+                <button class="btn-slicer btn-u" onclick="addText('c:u')">U</button>
+                <button class="btn-slicer btn-b" onclick="addText('c:b')">B</button>
+                <button class="btn-slicer btn-r" onclick="addText('c:r')">R</button>
+                <button class="btn-slicer btn-g" onclick="addText('c:g')">G</button>
+                <button class="btn-slicer" style="background: #444;" onclick="document.getElementById('searchBar').value = ''">🗑️ Clear</button>
             </div>
         </div>
 
         <form method="POST">
-            <input type="text" name="query" id="searchBar" placeholder="Search Command..." value="{{ query }}">
+            <input type="text" name="query" id="searchBar" placeholder="Final Scryfall Command..." value="{{ query }}">
             <button type="submit" class="btn-optimize">Optimize</button>
         </form>
 
@@ -140,18 +127,21 @@
             }
         }
 
+        function addRaw(id, prefix) {
+            const val = document.getElementById(id).value;
+            const bar = document.getElementById('searchBar');
+            if (val) {
+                const cmd = prefix.includes(':') ? `${prefix}"${val}"` : `"${val}"`;
+                bar.value = (bar.value + " " + cmd).trim();
+                document.getElementById(id).value = '';
+            }
+        }
+
         function addMV() {
             const op = document.getElementById('mvOp').value;
             const num = document.getElementById('mvNum').value;
             const bar = document.getElementById('searchBar');
-            const mvCommand = `mv${op}${num}`;
-            bar.value = (bar.value + " " + mvCommand).trim();
-        }
-
-        function clearAll() {
-            document.getElementById('searchBar').value = '';
-            // Forces a clean state
-            window.location.href = "/";
+            bar.value = (bar.value + ` mv${op}${num}`).trim();
         }
     </script>
 </body>
