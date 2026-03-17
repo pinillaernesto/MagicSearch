@@ -3,22 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Cartas Isshin</title>
+    <title>MagicSearch: Deck Optimization</title>
     <style>
-        /* CSS: Esto es el "arte" de la carta, cómo se ve todo */
+        /* CSS: Estilos generales */
         body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; }
         .container { max-width: 1000px; margin: auto; text-align: center; }
-        h1 { color: #ff4444; text-shadow: 2px 2px #000; }
+        h1 { color: #ff4444; text-shadow: 2px 2px #000; margin-bottom: 10px; }
         
+        /* Caja de la Guía de Búsqueda */
+        .guide-box {
+            background: #1e1e1e; border: 1px solid #444; border-radius: 10px; 
+            padding: 15px; margin: 0 auto 25px auto; max-width: 600px; 
+            text-align: left; font-size: 0.9em; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .guide-box h3 { margin-top: 0; color: #00ff88; text-align: center; font-size: 1.1em; }
+        .guide-box ul { list-style-type: none; padding-left: 0; margin-bottom: 0; }
+        .guide-box li { margin-bottom: 8px; }
+        .guide-box code { background: #000; padding: 3px 6px; border-radius: 4px; color: #ffaa00; font-family: monospace; }
+
         /* Estilo del buscador */
         form { margin-bottom: 30px; }
         input[type="text"] { 
-            padding: 12px; width: 70%; border-radius: 25px; border: 1px solid #444; 
-            background: #1e1e1e; color: white; font-size: 16px;
+            padding: 12px; width: 65%; border-radius: 25px; border: 1px solid #444; 
+            background: #1a1a1a; color: white; font-size: 16px;
         }
         button { 
             padding: 12px 25px; border-radius: 25px; border: none; 
-            background: #ff4444; color: white; cursor: pointer; font-weight: bold;
+            background: #ff4444; color: white; cursor: pointer; font-weight: bold; font-size: 16px;
         }
         button:hover { background: #cc0000; }
 
@@ -35,16 +46,26 @@
         .card:hover { transform: translateY(-5px); border-color: #ff4444; }
         img { width: 100%; border-radius: 10px; }
         p { margin: 8px 0; font-size: 0.9em; }
-        .price { color: #00ff88; font-weight: bold; }
+        .price { color: #00ff88; font-weight: bold; font-size: 1.1em; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Buscador Mardu para Isshin</h1>
-        <p>Prueba: <code>commander:WBR o:attacks f:draw</code></p>
+        <h1>MagicSearch: Deck Optimization</h1>
+
+        <div class="guide-box">
+            <h3>📚 Guía Rápida de Scryfall</h3>
+            <ul>
+                <li><strong>Identidad de Color:</strong> <code>commander:WBR</code>, <code>c:rakdos</code></li>
+                <li><strong>Valor de Maná:</strong> <code>mv<=3</code>, <code>mv=5</code></li>
+                <li><strong>Texto (Oracle):</strong> <code>o:draw</code>, <code>o:"whenever" o:"attacks"</code></li>
+                <li><strong>Tipos y Stats:</strong> <code>t:goblin</code>, <code>pow>3</code>, <code>tou>=4</code></li>
+                <li><strong>Funciones (Tags):</strong> <code>f:draw</code>, <code>f:ramp</code>, <code>f:removal</code></li>
+            </ul>
+        </div>
 
         <form method="POST">
-            <input type="text" name="query" placeholder="¿Qué buscamos hoy?" required>
+            <input type="text" name="query" placeholder="Ej: commander:WBR o:attacks f:draw" required>
             <button type="submit">Buscar Cartas</button>
         </form>
 
