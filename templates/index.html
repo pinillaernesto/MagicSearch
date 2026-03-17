@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Cartas Isshin</title>
+    <style>
+        /* CSS: Esto es el "arte" de la carta, cómo se ve todo */
+        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; text-align: center; }
+        h1 { color: #ff4444; text-shadow: 2px 2px #000; }
+        
+        /* Estilo del buscador */
+        form { margin-bottom: 30px; }
+        input[type="text"] { 
+            padding: 12px; width: 70%; border-radius: 25px; border: 1px solid #444; 
+            background: #1e1e1e; color: white; font-size: 16px;
+        }
+        button { 
+            padding: 12px 25px; border-radius: 25px; border: none; 
+            background: #ff4444; color: white; cursor: pointer; font-weight: bold;
+        }
+        button:hover { background: #cc0000; }
+
+        /* La cuadrícula de cartas */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 20px; 
+        }
+        .card { 
+            background: #1e1e1e; padding: 10px; border-radius: 12px; 
+            border: 1px solid #333; transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-5px); border-color: #ff4444; }
+        img { width: 100%; border-radius: 10px; }
+        p { margin: 8px 0; font-size: 0.9em; }
+        .price { color: #00ff88; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Buscador Mardu para Isshin</h1>
+        <p>Prueba: <code>commander:WBR o:attacks f:draw</code></p>
+
+        <form method="POST">
+            <input type="text" name="query" placeholder="¿Qué buscamos hoy?" required>
+            <button type="submit">Buscar Cartas</button>
+        </form>
+
+        <div class="grid">
+            {% for carta in cartas %}
+            <div class="card">
+                {% if carta.image_uris %}
+                    <img src="{{ carta.image_uris.normal }}" alt="{{ carta.name }}">
+                {% else %}
+                    <img src="https://placehold.co/488x680?text=No+Image" alt="Sin Imagen">
+                {% endif %}
+                <p><strong>{{ carta.name }}</strong></p>
+                <p class="price">USD: ${{ carta.prices.usd or 'N/A' }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
