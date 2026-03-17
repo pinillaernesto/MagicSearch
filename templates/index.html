@@ -5,60 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MagicSearch: Nexus Edition</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #0a0a0c; color: #d1d1d6; margin: 0; padding: 20px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0a0a0c; color: #d1d1d6; margin: 0; padding: 10px; }
         .container { max-width: 1100px; margin: auto; text-align: center; }
-        h1 { color: #ff3b30; text-shadow: 0 0 10px rgba(255, 59, 48, 0.4); }
+        h1 { color: #ff3b30; text-shadow: 0 0 10px rgba(255, 59, 48, 0.4); font-size: 1.8em; margin-bottom: 10px; }
         
-        /* Slicers Section */
-        .slicers { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; align-items: center; }
-        .group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-        .btn-slicer { 
-            background: #1c1c1e; color: #fff; border: 1px solid #3a3a3c; 
-            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9em; 
+        /* Guide - Always visible on mobile */
+        .guide-box { 
+            background: #1c1c1e; 
+            border: 1px solid #3a3a3c; 
+            border-radius: 12px; 
+            padding: 12px; 
+            margin-bottom: 20px; 
+            font-size: 0.85em;
+            text-align: left;
         }
-        .btn-slicer:hover { border-color: #ff3b30; background: #2c2c2e; }
-        
-        /* Mana Dots */
-        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; border: 1px solid #fff; }
-        .w { background: #fdf5cd; } .u { background: #0e68ab; } .b { background: #121212; } .r { background: #d32f2f; } .g { background: #00733e; }
+        .guide-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+            gap: 10px; 
+        }
+        code { background: #000; color: #ff9f0a; padding: 2px 4px; border-radius: 4px; font-family: monospace; }
 
-        /* Search Bar */
-        form { display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; }
-        #searchBar { width: 60%; padding: 12px; border-radius: 25px; border: 1px solid #3a3a3c; background: #1c1c1e; color: #fff; }
-        .btn-optimize { padding: 12px 25px; border-radius: 25px; border: none; background: #ff3b30; color: #fff; font-weight: bold; cursor: pointer; }
+        /* Controls & Slicers */
+        .controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; align-items: center; }
+        .group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+        
+        .btn-slicer, select, .mv-input { 
+            background: #1c1c1e; color: #fff; border: 1px solid #3a3a3c; 
+            padding: 8px 12px; border-radius: 15px; cursor: pointer; font-size: 0.85em; 
+        }
+        .mv-input { width: 50px; text-align: center; border-radius: 8px; }
+
+        /* Search Form */
+        form { display: flex; flex-direction: column; gap: 10px; align-items: center; margin-bottom: 30px; width: 100%; }
+        #searchBar { 
+            width: 90%; max-width: 600px; padding: 14px; 
+            border-radius: 25px; border: 1px solid #3a3a3c; 
+            background: #1c1c1e; color: #fff; font-size: 1em;
+        }
+        .btn-optimize { 
+            width: 90%; max-width: 200px; padding: 12px; 
+            border-radius: 25px; border: none; background: #ff3b30; 
+            color: #fff; font-weight: bold; cursor: pointer; 
+        }
 
         /* Results Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .card-box { background: #1c1c1e; padding: 10px; border-radius: 12px; border: 1px solid #2c2c2e; transition: 0.3s; }
-        .card-box:hover { transform: translateY(-5px); border-color: #ff3b30; }
-        .card-box img { width: 100%; border-radius: 8px; }
-        .card-name { margin-top: 10px; font-size: 0.85em; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .card-box { background: #1c1c1e; padding: 5px; border-radius: 10px; border: 1px solid #2c2c2e; }
+        .card-box img { width: 100%; border-radius: 5px; display: block; }
+        
+        /* Desktop Adjustments */
+        @media (min-width: 600px) {
+            h1 { font-size: 2.5em; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+            form { flex-direction: row; justify-content: center; }
+            .guide-box { padding: 15px; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>MagicSearch: Nexus Edition</h1>
-        <p style="color: #8e8e93;">Commander Deck Optimization Engine</p>
 
-        <div class="slicers">
-            <div class="group">
-                <button class="btn-slicer" onclick="addText('f:draw')">💧 Draw</button>
-                <button class="btn-slicer" onclick="addText('f:ramp')">🌱 Ramp</button>
-                <button class="btn-slicer" onclick="addText('f:removal')">💀 Removal</button>
-                <button class="btn-slicer" onclick="addText('f:wrath')">💥 Wipes</button>
+        <div class="guide-box">
+            <div class="guide-grid">
+                <div>Identity: <code>commander:WBR</code></div>
+                <div>Mana Value: <code>mv<=3</code></div>
+                <div>Logic: <code>function:draw</code></div>
+                <div>Oracle: <code>o:attacks</code></div>
             </div>
+        </div>
+
+        <div class="controls">
             <div class="group">
-                <button class="btn-slicer" onclick="addText('c:w')"><span class="dot w"></span> W</button>
-                <button class="btn-slicer" onclick="addText('c:u')"><span class="dot u"></span> U</button>
-                <button class="btn-slicer" onclick="addText('c:b')"><span class="dot b"></span> B</button>
-                <button class="btn-slicer" onclick="addText('c:r')"><span class="dot r"></span> R</button>
-                <button class="btn-slicer" onclick="addText('c:g')"><span class="dot g"></span> G</button>
-                <button class="btn-slicer" style="background: #444;" onclick="document.getElementById('searchBar').value = ''">🗑️ Clear</button>
+                <button class="btn-slicer" onclick="addText('function:draw')">💧 Draw</button>
+                <button class="btn-slicer" onclick="addText('function:ramp')">🌱 Ramp</button>
+                <button class="btn-slicer" onclick="addText('function:removal')">💀 Removal</button>
+                <select class="btn-slicer" onchange="addText(this.value); this.selectedIndex=0;">
+                    <option value="">More Functions...</option>
+                    <option value="function:tutor">🔍 Tutor</option>
+                    <option value="function:wrath">💥 Board Wipe</option>
+                    <option value="function:reanimate">⚰️ Reanimate</option>
+                    <option value="function:counterspell">🚫 Counter</option>
+                </select>
+            </div>
+
+            <div class="group" style="background: #1c1c1e; padding: 8px 15px; border-radius: 20px; border: 1px solid #3a3a3c;">
+                <span style="font-size: 0.8em; align-self: center; margin-right: 5px;">MV:</span>
+                <select id="mvOp" class="btn-slicer" style="border: none; background: transparent;">
+                    <option value="=">=</option>
+                    <option value="<">&lt;</option>
+                    <option value="<=">&le;</option>
+                    <option value=">">&gt;</option>
+                    <option value=">=">&ge;</option>
+                </select>
+                <input type="number" id="mvNum" class="mv-input" placeholder="0">
+                <button class="btn-slicer" onclick="addMV()" style="margin-left: 5px; background: #3a3a3c;">Add</button>
+            </div>
+
+            <div class="group">
+                <button class="btn-slicer" onclick="addText('c:w')">W</button>
+                <button class="btn-slicer" onclick="addText('c:u')">U</button>
+                <button class="btn-slicer" onclick="addText('c:b')">B</button>
+                <button class="btn-slicer" onclick="addText('c:r')">R</button>
+                <button class="btn-slicer" onclick="addText('c:g')">G</button>
+                <button class="btn-slicer" style="background: #444;" onclick="clearAll()">🗑️ Clear</button>
             </div>
         </div>
 
         <form method="POST">
-            <input type="text" name="query" id="searchBar" placeholder="Insert Scryfall syntax..." value="{{ query }}">
+            <input type="text" name="query" id="searchBar" placeholder="Search Command..." value="{{ query }}">
             <button type="submit" class="btn-optimize">Optimize</button>
         </form>
 
@@ -70,7 +126,6 @@
                 {% else %}
                     <img src="https://placehold.co/488x680?text=No+Image" alt="No Image">
                 {% endif %}
-                <p class="card-name">{{ card.name }}</p>
             </div>
             {% endfor %}
         </div>
@@ -78,10 +133,25 @@
 
     <script>
         function addText(val) {
+            if (!val) return;
             const bar = document.getElementById('searchBar');
             if (!bar.value.includes(val)) {
                 bar.value = (bar.value + " " + val).trim();
             }
+        }
+
+        function addMV() {
+            const op = document.getElementById('mvOp').value;
+            const num = document.getElementById('mvNum').value;
+            const bar = document.getElementById('searchBar');
+            const mvCommand = `mv${op}${num}`;
+            bar.value = (bar.value + " " + mvCommand).trim();
+        }
+
+        function clearAll() {
+            document.getElementById('searchBar').value = '';
+            // Forces a clean state
+            window.location.href = "/";
         }
     </script>
 </body>
