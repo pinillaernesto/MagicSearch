@@ -5,73 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MagicSearch: Nexus Edition</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #0a0a0c; color: #d1d1d6; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .main-wrapper { max-width: 1200px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        h1 { color: #ff3b30; text-shadow: 0 0 10px rgba(255, 59, 48, 0.4); font-size: 2.5em; margin-bottom: 5px; }
-        .subtitle { color: #8e8e93; margin-bottom: 25px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0a0a0c; color: #d1d1d6; margin: 0; padding: 20px; }
+        .container { max-width: 1100px; margin: auto; text-align: center; }
+        h1 { color: #ff3b30; text-shadow: 0 0 10px rgba(255, 59, 48, 0.4); }
         
-        .guide-box { background: #1c1c1e; border: 1px solid #3a3a3c; border-radius: 12px; padding: 15px; margin-bottom: 30px; width: 100%; max-width: 800px; }
-        .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; text-align: left; }
-        code { background: #000; color: #ff9f0a; padding: 2px 5px; border-radius: 4px; font-family: monospace; }
-
-        .slicers-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; width: 100%; }
-        .slicers-group { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .slicer { background: #2c2c2e; color: #fff; border: 1px solid #3a3a3c; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: 0.2s; }
-        .slicer:hover { border-color: #ff3b30; background: #3a3a3c; }
+        /* Slicers Section */
+        .slicers { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; align-items: center; }
+        .group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .btn-slicer { 
+            background: #1c1c1e; color: #fff; border: 1px solid #3a3a3c; 
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9em; 
+        }
+        .btn-slicer:hover { border-color: #ff3b30; background: #2c2c2e; }
         
-        .color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px; border: 1px solid #fff; }
-        .w { background: #fdf5cd; } .u { background: #0e68ab; } .b { background: #1c1c1c; } .r { background: #d32f2f; } .g { background: #00733e; }
+        /* Mana Dots */
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; border: 1px solid #fff; }
+        .w { background: #fdf5cd; } .u { background: #0e68ab; } .b { background: #121212; } .r { background: #d32f2f; } .g { background: #00733e; }
 
-        form { display: flex; gap: 10px; width: 100%; justify-content: center; margin-bottom: 40px; }
-        input[type="text"] { width: 60%; padding: 12px 20px; border-radius: 25px; border: 2px solid #3a3a3c; background: #1c1c1e; color: #fff; font-size: 1.1em; }
-        button[type="submit"] { padding: 12px 30px; border-radius: 25px; border: none; background: #ff3b30; color: #fff; font-weight: bold; cursor: pointer; }
+        /* Search Bar */
+        form { display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; }
+        #searchBar { width: 60%; padding: 12px; border-radius: 25px; border: 1px solid #3a3a3c; background: #1c1c1e; color: #fff; }
+        .btn-optimize { padding: 12px 25px; border-radius: 25px; border: none; background: #ff3b30; color: #fff; font-weight: bold; cursor: pointer; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; width: 100%; }
-        .card { background: #1c1c1e; padding: 10px; border-radius: 12px; border: 1px solid #2c2c2e; transition: 0.3s; text-align: center; }
-        .card:hover { transform: translateY(-5px); border-color: #ff3b30; }
-        .card img { width: 100%; border-radius: 8px; }
-        .card-name { margin-top: 10px; font-weight: bold; font-size: 0.9em; }
+        /* Results Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card-box { background: #1c1c1e; padding: 10px; border-radius: 12px; border: 1px solid #2c2c2e; transition: 0.3s; }
+        .card-box:hover { transform: translateY(-5px); border-color: #ff3b30; }
+        .card-box img { width: 100%; border-radius: 8px; }
+        .card-name { margin-top: 10px; font-size: 0.85em; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="main-wrapper">
+    <div class="container">
         <h1>MagicSearch: Nexus Edition</h1>
-        <p class="subtitle">Commander Deck Optimization Engine</p>
+        <p style="color: #8e8e93;">Commander Deck Optimization Engine</p>
 
-        <div class="guide-box">
-            <div class="guide-grid">
-                <div><strong>Identity:</strong> <code>commander:WBR</code></div>
-                <div><strong>Oracle:</strong> <code>o:"whenever" o:"attacks"</code></div>
-                <div><strong>Function:</strong> <code>f:draw</code>, <code>f:ramp</code></div>
+        <div class="slicers">
+            <div class="group">
+                <button class="btn-slicer" onclick="addText('f:draw')">💧 Draw</button>
+                <button class="btn-slicer" onclick="addText('f:ramp')">🌱 Ramp</button>
+                <button class="btn-slicer" onclick="addText('f:removal')">💀 Removal</button>
+                <button class="btn-slicer" onclick="addText('f:wrath')">💥 Wipes</button>
             </div>
-        </div>
-
-        <div class="slicers-container">
-            <div class="slicers-group">
-                <button class="slicer" onclick="addQuery('f:draw')">💧 Draw</button>
-                <button class="slicer" onclick="addQuery('f:ramp')">🌱 Ramp</button>
-                <button class="slicer" onclick="addQuery('f:removal')">💀 Removal</button>
-                <button class="slicer" onclick="addQuery('f:wrath')">💥 Wipes</button>
-                <button class="slicer" onclick="addQuery('t:creature')">⚔️ Creatures</button>
-            </div>
-            <div class="slicers-group">
-                <button class="slicer" onclick="addQuery('c:w')"><span class="color-dot w"></span> W</button>
-                <button class="slicer" onclick="addQuery('c:u')"><span class="color-dot u"></span> U</button>
-                <button class="slicer" onclick="addQuery('c:b')"><span class="color-dot b"></span> B</button>
-                <button class="slicer" onclick="addQuery('c:r')"><span class="color-dot r"></span> R</button>
-                <button class="slicer" onclick="addQuery('c:g')"><span class="color-dot g"></span> G</button>
-                <button class="slicer" style="background: #444;" onclick="document.getElementById('searchBar').value = ''">🗑️ Clear</button>
+            <div class="group">
+                <button class="btn-slicer" onclick="addText('c:w')"><span class="dot w"></span> W</button>
+                <button class="btn-slicer" onclick="addText('c:u')"><span class="dot u"></span> U</button>
+                <button class="btn-slicer" onclick="addText('c:b')"><span class="dot b"></span> B</button>
+                <button class="btn-slicer" onclick="addText('c:r')"><span class="dot r"></span> R</button>
+                <button class="btn-slicer" onclick="addText('c:g')"><span class="dot g"></span> G</button>
+                <button class="btn-slicer" style="background: #444;" onclick="document.getElementById('searchBar').value = ''">🗑️ Clear</button>
             </div>
         </div>
 
         <form method="POST">
-            <input type="text" name="query" id="searchBar" placeholder="Insert Scryfall command..." value="{{ query }}">
-            <button type="submit">Optimize</button>
+            <input type="text" name="query" id="searchBar" placeholder="Insert Scryfall syntax..." value="{{ query }}">
+            <button type="submit" class="btn-optimize">Optimize</button>
         </form>
 
         <div class="grid">
             {% for card in cards %}
-            <div class="card">
+            <div class="card-box">
                 {% if card.image_uris %}
                     <img src="{{ card.image_uris.normal }}" alt="{{ card.name }}">
                 {% else %}
@@ -84,10 +77,10 @@
     </div>
 
     <script>
-        function addQuery(text) {
+        function addText(val) {
             const bar = document.getElementById('searchBar');
-            if (!bar.value.includes(text)) {
-                bar.value = (bar.value + " " + text).trim();
+            if (!bar.value.includes(val)) {
+                bar.value = (bar.value + " " + val).trim();
             }
         }
     </script>
