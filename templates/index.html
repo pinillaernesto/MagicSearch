@@ -1,27 +1,182 @@
-<div class="group" style="background: #1c1c1e; padding: 10px; border-radius: 15px; border: 1px solid #ff9f0a;">
-    <span style="font-size: 0.8em; margin-right: 10px; color: #ff9f0a;">🎴 Import Deck:</span>
-    {% for name, id in decks.items() %}
-        <button type="button" class="btn-slicer" onclick="fetchArchidekt('{{ id }}')">{{ name }}</button>
-    {% endfor %}
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicSearch: Nexus Edition</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0a0a0c; color: #d1d1d6; margin: 0; padding: 10px; }
+        .container { max-width: 1100px; margin: auto; text-align: center; }
+        h1 { color: #ff3b30; text-shadow: 0 0 10px rgba(255, 59, 48, 0.4); font-size: 2.2em; margin-bottom: 5px; }
+        p.subtitle { color: #8e8e93; margin-bottom: 20px; font-size: 0.9em; }
 
-<script>
-    async function fetchArchidekt(deckId) {
-        const bar = document.getElementById('searchBar');
-        bar.placeholder = "Importing from Archidekt...";
+        .controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; align-items: center; }
+        .group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; width: 100%; }
         
-        try {
-            const response = await fetch(`/import_deck/${deckId}`);
-            const data = await response.json();
-            if (data.query) {
-                bar.value = data.query;
-            } else {
-                alert("Error: " + data.error);
-            }
-        } catch (e) {
-            alert("Connection to Archidekt failed.");
-        } finally {
-            bar.placeholder = "Search Command...";
+        /* Buttons and Selects */
+        .btn-slicer, select, .text-input, .mv-input { 
+            background: #1c1c1e; color: #fff; border: 1px solid #3a3a3c; 
+            padding: 10px 14px; border-radius: 15px; cursor: pointer; font-size: 0.85em; 
         }
-    }
-</script>
+
+        /* Fix Dropdown Visibility */
+        select option { background: #ffffff; color: #000000; }
+
+        .text-input { width: 130px; }
+        .mv-input { width: 45px; text-align: center; }
+
+        /* Mana Colors */
+        .btn-w { border-color: #fdf5cd; color: #fdf5cd; }
+        .btn-u { border-color: #0e68ab; color: #0e68ab; }
+        .btn-b { border-color: #a1a1a6; color: #a1a1a6; }
+        .btn-r { border-color: #d32f2f; color: #d32f2f; }
+        .btn-g { border-color: #00733e; color: #00733e; }
+
+        /* Main Search Bar */
+        form { display: flex; flex-direction: column; gap: 12px; align-items: center; margin-bottom: 40px; width: 100%; }
+        #searchBar { width: 95%; max-width: 750px; padding: 15px; border-radius: 30px; border: 2px solid #3a3a3c; background: #1c1c1e; color: #fff; font-size: 1.1em; }
+        .btn-optimize { width: 220px; padding: 14px; border-radius: 30px; border: none; background: #ff3b30; color: #fff; font-weight: bold; cursor: pointer; font-size: 1em; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); }
+
+        /* Results Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
+        .card-box { background: #1c1c1e; padding: 5px; border-radius: 12px; border: 1px solid #2c2c2e; transition: 0.3s; }
+        .card-box:hover { transform: translateY(-5px); border-color: #ff3b30; }
+        .card-box img { width: 100%; border-radius: 8px; display: block; }
+
+        @media (min-width: 600px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+            h1 { font-size: 3em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MagicSearch: Nexus Edition</h1>
+        <p class="subtitle">Commander Deck Optimization Tool</p>
+
+        <div class="controls">
+            <div class="group" style="border: 1px solid #ff9f0a; padding: 10px; border-radius: 20px;">
+                <span style="font-size: 0.8em; color: #ff9f0a; font-weight: bold; width: 100%; margin-bottom: 5px;">MY DECKS (ARCHIDEKT)</span>
+                {% for name, id in decks.items() %}
+                    <button type="button" class="btn-slicer" onclick="fetchArchidekt('{{ id }}', '{{ name }}')">{{ name }}</button>
+                {% endfor %}
+            </div>
+
+            <div class="group">
+                <button class="btn-slicer" onclick="addText('function:draw')">Draw</button>
+                <button class="btn-slicer" onclick="addText('function:ramp')">Ramp</button>
+                <button class="btn-slicer" onclick="addText('function:removal')">Removal</button>
+                <button class="btn-slicer" onclick="addText('function:wrath')">Boardwipe</button>
+                <button class="btn-slicer" onclick="addText('function:treasure')">Treasure</button>
+                <button class="btn-slicer" onclick="addText('function:landfall')">Landfall</button>
+                <select class="btn-slicer" onchange="addText(this.value); this.selectedIndex=0;">
+                    <option value="">More Functions...</option>
+                    <option value="function:tutor">Tutor</option>
+                    <option value="function:reanimate">Reanimate</option>
+                    <option value="function:counterspell">Counterspell</option>
+                    <option value="function:stax">Stax</option>
+                    <option value="function:protection">Protection</option>
+                </select>
+            </div>
+
+            <div class="group">
+                <input type="text" id="nameInp" class="text-input" placeholder="Card Name...">
+                <button class="btn-slicer" onclick="addRaw('nameInp', '')">Add Name</button>
+                <input type="text" id="oraInp" class="text-input" placeholder="Oracle text...">
+                <button class="btn-slicer" onclick="addRaw('oraInp', 'o:')">Add Oracle</button>
+            </div>
+
+            <div class="group" style="background: #1c1c1e; padding: 5px 15px; border-radius: 20px; border: 1px solid #3a3a3c;">
+                <span style="font-size: 0.8em; margin-right: 5px;">MV:</span>
+                <select id="mvOp" class="btn-slicer" style="border:none;">
+                    <option value="=">=</option>
+                    <option value="<">&lt;</option>
+                    <option value="<=">&le;</option>
+                    <option value=">">&gt;</option>
+                    <option value=">=">&ge;</option>
+                </select>
+                <input type="number" id="mvNum" class="mv-input" placeholder="0">
+                <button class="btn-slicer" onclick="addMV()" style="background: #3a3a3c; border:none;">Add MV</button>
+            </div>
+
+            <div class="group">
+                <button class="btn-slicer btn-w" onclick="addText('c:w')">W</button>
+                <button class="btn-slicer btn-u" onclick="addText('c:u')">U</button>
+                <button class="btn-slicer btn-b" onclick="addText('c:b')">B</button>
+                <button class="btn-slicer btn-r" onclick="addText('c:r')">R</button>
+                <button class="btn-slicer btn-g" onclick="addText('c:g')">G</button>
+                <button class="btn-slicer" style="background: #444;" onclick="document.getElementById('searchBar').value = ''">🗑️ Clear</button>
+            </div>
+        </div>
+
+        <form method="POST">
+            <input type="text" name="query" id="searchBar" placeholder="Insert Scryfall syntax..." value="{{ query }}">
+            <button type="submit" class="btn-optimize">OPTIMIZE</button>
+        </form>
+
+        <div class="grid">
+            {% for card in cards %}
+            <div class="card-box">
+                {% if card.image_uris %}
+                    <img src="{{ card.image_uris.normal }}" alt="{{ card.name }}">
+                {% else %}
+                    <img src="https://placehold.co/488x680?text=No+Image" alt="No Image">
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // 1. Añadir texto de botones de función o color
+        function addText(val) {
+            if (!val) return;
+            const bar = document.getElementById('searchBar');
+            if (!bar.value.includes(val)) {
+                bar.value = (bar.value + " " + val).trim();
+            }
+        }
+
+        // 2. Añadir Nombre u Oracle con comillas
+        function addRaw(id, prefix) {
+            const val = document.getElementById(id).value;
+            const bar = document.getElementById('searchBar');
+            if (val) {
+                const cmd = prefix ? `${prefix}"${val}"` : `"${val}"`;
+                bar.value = (bar.value + " " + cmd).trim();
+                document.getElementById(id).value = '';
+            }
+        }
+
+        // 3. Añadir Mana Value
+        function addMV() {
+            const op = document.getElementById('mvOp').value;
+            const num = document.getElementById('mvNum').value;
+            const bar = document.getElementById('searchBar');
+            bar.value = (bar.value + ` mv${op}${num}`).trim();
+        }
+
+        // 4. Importar desde Archidekt
+        async function fetchArchidekt(deckId, deckName) {
+            const bar = document.getElementById('searchBar');
+            const originalPlaceholder = bar.placeholder;
+            bar.placeholder = `Importing cards from ${deckName}...`;
+            bar.value = '';
+
+            try {
+                const response = await fetch(`/import_deck/${deckId}`);
+                const data = await response.json();
+                if (data.query) {
+                    bar.value = data.query;
+                } else {
+                    alert("Error: Make sure the deck is public or your Token is set.");
+                }
+            } catch (e) {
+                alert("Connection error.");
+            } finally {
+                bar.placeholder = originalPlaceholder;
+            }
+        }
+    </script>
+</body>
+</html>
